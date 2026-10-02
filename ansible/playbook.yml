@@ -1,0 +1,32 @@
+- hosts: app_server
+  become: yes
+  tasks:
+    - name: Install Docker and Git
+      apt:
+        name:
+          - docker.io
+          - git
+        state: present
+        update_cache: yes
+
+    - name: Start Docker
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Download app code from GitHub
+      git:
+        repo: https://github.com/abrarulhaqhaq04-stack/attendance-system.git
+        dest: /home/ubuntu/attendance-system
+        version: main
+
+    - name: Build the Docker image
+      command: docker build -t attendance-app /home/ubuntu/attendance-system
+
+    - name: Remove old container if it exists
+      command: docker rm -f attendance
+      ignore_errors: yes
+
+    - name: Run the app
+      command: docker run -d --name attendance -p 8000:8000 attendance-app
