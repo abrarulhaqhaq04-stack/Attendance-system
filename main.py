@@ -1,8 +1,9 @@
 from datetime import datetime, date
 from fastapi import FastAPI, HTTPException
+from prometheus_fastapi_instrumentator import Instrumentator
 
 app = FastAPI()
-
+Instrumentator().instrument(app).expose(app)
 employees = {}      # stores employees: {1: "Ali", 2: "Sara"}
 attendance = []     # stores check-in/out records
 
