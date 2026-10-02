@@ -12,12 +12,15 @@ spec:
       labels:
         app: attendance
     spec:
-      containers:
-        - name: attendance
-          image: attendance-app:v2
-          imagePullPolicy: IfNotPresent
-          ports:
-            - containerPort: 8000
+           containers:
+             - name: attendance
+               image: attendance-app:v4
+               imagePullPolicy: Never
+               env:
+                 - name: DATABASE_URL
+                   value: "postgresql+psycopg2://attendance:attendance123@postgres:5432/attendance"
+               ports:
+                 - containerPort: 8000
 ---
 apiVersion: v1
 kind: Service
