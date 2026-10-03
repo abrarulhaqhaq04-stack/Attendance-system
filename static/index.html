@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Attendance System</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f2f4f8; margin: 0; padding: 20px; }
+    .card { max-width: 700px; margin: 0 auto 20px; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,.1); }
+    h1 { text-align: center; color: #1f3a5f; }
+    select, input, button { padding: 10px; font-size: 16px; margin: 4px 0; }
+    button { border: none; border-radius: 6px; color: #fff; cursor: pointer; }
+    .in { background: #2e9e5b; } .out { background: #d9534f; } .add { background: #1f6fd1; }
+    #msg { margin-top: 10px; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { border-bottom: 1px solid #ddd; padding: 8px; text-align: left; }
+    th { background: #eef1f6; }
+  </style>
+</head>
+<body>
+  <h1>Attendance System</h1>
+
+  <div class="card">
+    <h3>Check in / Check out</h3>
+    <select id="emp"></select><br>
+    <button class="in" onclick="act('check-in')">Check in</button>
+    <button class="out" onclick="act('check-out')">Check out</button>
+    <div id="msg"></div>
+  </div>
+
+  <div class="card">
+    <h3>Add employee</h3>
+    <input id="newName" placeholder="Employee name">
+    <button class="add" onclick="addEmp()">Add</button>
+  </div>
+
+  <div class="card">
+    <h3>Today's attendance</h3>
+    <table>
+      <thead><tr><th>ID</th><th>Name</th><th>Check in</th><th>Check out</th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </div>
+
+<script>
+  function show(text, ok) {
+    const m = document.getElementById("msg");
+    m.textContent = text;
+    m.style.color = ok ? "green" : "red";
+  }
+
+  async function loadEmployees() {
+    const res = await fetch("/employees");
+    const list = await res.json();
+    const sel = document.getElementById("emp");
+    sel.innerHTML = "";
+    list.forEach(e => {
+      const o = document.createElement("option");
+      o.value = e.id;
+      o.textContent = e.id + " - " + e.name;
+      sel.appendChild(o);
+    });
+  }
+
+  async function loadReport() {
+    const res = await fetch("/report/today");
+    const data = await res.json();
+    const body = document.getElementById("rows");
+    body.innerHTML = "";
+    data.forEach(r => {
+      const tr = document.createElement("tr");
+      [r.emp_id, r.name, r.check_in || "-", r.check_out || "-"].forEach(v => {
+        const td = document.createElement("td");
+        td.textContent = v;
+        tr.appendChild(td);
+      });
+      body.appendChild(tr);
+    });
+  }
+
+  async function act(kind) {
+    const id = document.getElementById("emp").value;
+    if (!id) { show("Add an employee first", false); return; }
+    const res = await fetch("/" + kind + "/" + id, { method: "POST" });
+    const data = await res.json();
+    show(res.ok ? data.message : data.detail, res.ok);
+    loadReport();
+  }
+
+  async function addEmp() {
+    const input = document.getElementById("newName");
+    const name = input.value.trim();
+    if (!name) { show("Type a name", false); return; }
+    const res = await fetch("/employees?name=" + encodeURIComponent(name), { method: "POST" });
+    if (res.ok) { input.value = ""; show("Employee added", true); loadEmployees(); }
+  }
+
+  loadEmployees();
+  loadReport();
+  setInterval(loadReport, 10000);
+</script>
+</body>
+</html>

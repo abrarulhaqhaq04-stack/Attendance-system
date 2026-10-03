@@ -11,3 +11,7 @@ def test_checkin_twice_is_blocked():
     emp = client.post("/employees", params={"name": "Ali"}).json()
     assert client.post(f"/check-in/{emp['id']}").status_code == 200
     assert client.post(f"/check-in/{emp['id']}").status_code == 400
+
+def test_frontend_page():
+    response = client.get("/app")
+    assert response.status_code == 200

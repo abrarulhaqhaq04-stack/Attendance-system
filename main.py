@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException, Depends
 from prometheus_fastapi_instrumentator import Instrumentator
 from sqlalchemy import create_engine, Column, Integer, String, Date, DateTime, extract
 from sqlalchemy.orm import declarative_base, sessionmaker, Session
+from fastapi.responses import FileResponse
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./attendance.db")
 args = {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
@@ -116,3 +117,7 @@ def report_monthly(year: int, month: int, db: Session = Depends(get_db)):
     for a, e in rows:
         summary[e.name] = summary.get(e.name, 0) + 1
     return {"year": year, "month": month, "days_present": summary}
+
+@app.get("/app")
+def frontend():
+    return FileResponse("static/index.html")
