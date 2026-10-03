@@ -13,7 +13,7 @@ pipeline {
 }
         stage('Build Docker Image') {
             steps {
-               bat '"C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t attendance-app:4 .'
+               bat '"C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t attendance:4 .'
             }
         }
      stage('Deploy to Kubernetes') {
