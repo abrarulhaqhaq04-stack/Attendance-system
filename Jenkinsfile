@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        KUBECONFIG = 'C:\Users\\abrar ul haq\\.kube\\config'
+        KUBECONFIG = 'C:/users/abrar ul haq/.kube/config'
     }
     stages {
        stage('Test') {
