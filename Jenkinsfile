@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    environment {
+        KUBECONFIG = 'C:\\jenkins-kube\\config'
+    }
     stages {
        stage('Test') {
     steps {
@@ -11,6 +14,14 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                bat '"C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t attendance-app:4 .'
+            }
+        }
+     stage('Deploy to Kubernetes') {
+            steps {
+                bat 'kubectl apply -f k8s/postgres.yml'
+                bat 'kubectl apply -f k8s/deployment.yml'
+                bat 'kubectl set image deployment/attendance attendance=attendance-app:%BUILD_NUMBER%'
+                bat 'kubectl rollout status deployment/attendance --timeout=120s'
             }
         }
     }
