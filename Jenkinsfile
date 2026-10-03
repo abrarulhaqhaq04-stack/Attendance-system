@@ -13,7 +13,7 @@ pipeline {
 }
         stage('Build Docker Image') {
             steps {
-               bat '"C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t attendance:4 .'
+               bat '"C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin\\docker.exe" build -t attendance-app :%BUILD_NUMBER% .'
             }
         }
      stage('Deploy to Kubernetes') {
@@ -24,7 +24,8 @@ pipeline {
 
             kubectl version --client
             kubectl apply -f k8s/postgres.yml
-            kubectl set image deployment/attendance attendance=attendance:4
+            kubectl set image deployment/attendance attendance=attendance-app:%BUILD_NUMBER%
+            kubectl apply -f k8s/Deployment.yml
             kubectl rollout status deployment/attendance --timeout=120s
         '''
     }
