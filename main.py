@@ -54,7 +54,7 @@ def fmt(t):
 
 @app.get("/")
 def home():
-    return {"message": "Attendance System is running"}
+    return {"message": "Attendance System  v2 is running"}
 
 
 @app.post("/employees")

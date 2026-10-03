@@ -17,12 +17,17 @@ pipeline {
             }
         }
      stage('Deploy to Kubernetes') {
-            steps {
-                bat 'kubectl apply -f k8s/postgres.yml'
-                bat 'kubectl apply -f k8s/deployment.yml'
-                bat 'kubectl set image deployment/attendance attendance=attendance-app:%BUILD_NUMBER%'
-                bat 'kubectl rollout status deployment/attendance --timeout=120s'
-            }
-        }
+    steps {
+        bat '''
+            set "PATH=C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+
+            kubectl version --client
+            kubectl apply -f k8s/postgres.yml
+            kubectl apply -f k8s/deployment.yml
+            kubectl set image deployment/attendance attendance=attendance:latest
+            kubectl rollout status deployment/attendance --timeout=120s
+        '''
+    }
+}
     }
 }
