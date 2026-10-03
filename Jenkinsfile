@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        KUBECONFIG = 'C:\\jenkins-kube\\config'
+        KUBECONFIG = 'C:\Users\\abrar ul haq\\.kube\\config'
     }
     stages {
        stage('Test') {
@@ -20,6 +20,7 @@ pipeline {
     steps {
         bat '''
             set "PATH=C:\\Users\\abrar ul haq\\AppData\\Local\\Programs\\DockerDesktop\\resources\\bin;%PATH%"
+            kubectl config use-context docker-desktop
 
             kubectl version --client
             kubectl apply -f k8s/postgres.yml
