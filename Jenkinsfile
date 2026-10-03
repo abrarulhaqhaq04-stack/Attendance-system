@@ -24,7 +24,6 @@ pipeline {
 
             kubectl version --client
             kubectl apply -f k8s/postgres.yml
-            kubectl apply -f k8s/deployment.yml
             kubectl set image deployment/attendance attendance=attendance:4
             kubectl rollout status deployment/attendance --timeout=120s
         '''
