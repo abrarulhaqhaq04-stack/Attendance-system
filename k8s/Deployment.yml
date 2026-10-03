@@ -15,7 +15,7 @@ spec:
            containers:
              - name: attendance
                image: attendance-app:v4
-               imagePullPolicy: Never
+               imagePullPolicy: IfNotPresent
                env:
                  - name: DATABASE_URL
                    value: "postgresql+psycopg2://attendance:attendance123@postgres:5432/attendance"
